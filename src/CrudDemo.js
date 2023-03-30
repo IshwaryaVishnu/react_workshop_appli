@@ -1,85 +1,72 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
 
-const TableHeader = () => {
+function TableHeader() {
   return (
     <thead>
       <tr>
-        <th>ID</th>
         <th>Name</th>
-        <th>Age</th>
-        <th>Gender</th>
-        <th>Action</th>
+        <th>Email</th>
+        <th>Actions</th>
       </tr>
     </thead>
   );
-};
+}
 
-const TableAction = (props) => {
+function TableAction(props) {
+  const handleDelete = () => {
+    props.onDelete(props.person.id);
+  };
+
   return (
     <td>
-      <button className="btn btn-primary" onClick={props.handleEdit}>Edit</button>
-      <button className="btn btn-danger" onClick={props.handleDelete}>Delete</button>
+      <button onClick={handleDelete}>Delete</button>
     </td>
   );
-};
+}
 
-const TableRow = (props) => {
-  const { id, name, age, gender } = props.person;
-
-  const handleEdit = () => {
-    console.log(`Editing person with ID ${id}`);
-  };
-
-  const handleDelete = () => {
-    console.log(`Deleting person with ID ${id}`);
-  };
-
+function TableRow(props) {
   return (
     <tr>
-      <td>{id}</td>
-      <td>{name}</td>
-      <td>{age}</td>
-      <td>{gender}</td>
-      <TableAction handleEdit={handleEdit} handleDelete={handleDelete} />
+      <td>{props.person.name}</td>
+      <td>{props.person.email}</td>
+      <TableAction person={props.person} onDelete={props.onDelete} />
     </tr>
   );
-};
+}
 
-const Table = (props) => {
-  const { people } = props;
-
+function Table(props) {
   return (
-    <table className="table">
+    <table>
       <TableHeader />
       <tbody>
-        {people.map((person) => (
-          <TableRow key={person.id} person={person} />
+        {props.people.map((person) => (
+          <TableRow key={person.id} person={person} onDelete={props.onDelete} />
         ))}
       </tbody>
     </table>
   );
-};
+}
 
-const CrudDemo = () => {
+function CrudDemo() {
   const [people, setPeople] = useState([]);
 
   useEffect(() => {
-    axios.get('https://jsonplaceholder.typicode.com/users')
-      .then((response) => {
-        setPeople(response.data);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+    fetch('https://example.com/api/people')
+      .then((response) => response.json())
+      .then((data) => setPeople(data));
   }, []);
+
+  const handleDelete = (id) => {
+    const updatedPeople = people.filter((person) => person.id !== id);
+    setPeople(updatedPeople);
+  };
 
   return (
     <div>
-      <h2>People List</h2>
-      <Table people={people} />
+      <h1>CRUD Demo</h1>
+      <Table people={people} onDelete={handleDelete} />
     </div>
   );
-};
+}
 
 export default CrudDemo;

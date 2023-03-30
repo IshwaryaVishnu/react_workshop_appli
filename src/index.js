@@ -1,10 +1,9 @@
 import React from 'react';
-import ReactDOM from 'react-dom/client';
+import ReactDOM from 'react-dom';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import RouterDemo from './RouterDemo';
 
-const App = () => {
-  return <h1>Hello, React!</h1>;
-};
-
-const rootElement = document.getElementById('root');
-const root = ReactDOM.createRoot(rootElement);
-root.render(<App />);
+ReactDOM.render(
+  <RouterDemo />,
+  document.getElementById('root')
+);
